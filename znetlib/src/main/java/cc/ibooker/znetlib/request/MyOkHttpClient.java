@@ -4,13 +4,12 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import cc.ibooker.znetlib.base.ZNet;
-import cc.ibooker.znetlib.interceptor.CacheInterceptor;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import cc.ibooker.znetlib.base.ZNet;
+import cc.ibooker.znetlib.interceptor.CacheInterceptor;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -24,6 +23,10 @@ import okhttp3.logging.HttpLoggingInterceptor;
  */
 public class MyOkHttpClient {
     private static OkHttpClient mClient;
+    private static OkHttpClient.Builder mClientBuilder;
+    private static int defaultTimeout = 15;// 单位s
+    private static File cacheFile = new File(Environment.getExternalStorageDirectory() + File.separator + "ibooker", "cacheData");
+    private static long cacheSize = 31457280;// 缓存大小30M - 1024 * 1024 * 30
 
     // 构造方法私有
     private MyOkHttpClient() {
@@ -49,23 +52,21 @@ public class MyOkHttpClient {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         // Okhttp缓存拦截器
-        File fileCache = new File(Environment.getExternalStorageDirectory() + File.separator + "aixizhi", "cacheData");
-        Cache cache = new Cache(fileCache.getAbsoluteFile(), 1024 * 1024 * 30);//设置缓存30M
-        CacheInterceptor caheInterceptor = new CacheInterceptor(ZNet.getInstance());// 缓存拦截器
+        if (cacheFile == null || cacheFile.exists())
+            cacheFile = new File(Environment.getExternalStorageDirectory() + File.separator + "ibooker", "cacheData");
+        Cache cache = new Cache(cacheFile.getAbsoluteFile(), cacheSize);//设置缓存30M
+        CacheInterceptor cacheInterceptor = new CacheInterceptor(ZNet.getInstance());// 缓存拦截器
 
         // 创建OkHttpClient对象
-        int DEFAULT_TIMEOUT = 15;
-        mClient = new OkHttpClient.Builder()
-//                .addInterceptor(noTokenInterceptor)
+        mClient = getClientBuilder()
                 .addInterceptor(logging)
-//                .addInterceptor(longLogging)
-                .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)// 超时时间15S
-                .writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
-                .readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(defaultTimeout, TimeUnit.SECONDS)// 超时时间15S
+                .writeTimeout(defaultTimeout, TimeUnit.SECONDS)
+                .readTimeout(defaultTimeout, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)// 连接失败后是否重新连接
                 .cache(cache)//设置缓存
-                .addInterceptor(caheInterceptor)// 离线缓存
-                .addNetworkInterceptor(caheInterceptor)// 在线缓存
+                .addInterceptor(cacheInterceptor)// 离线缓存
+                .addNetworkInterceptor(cacheInterceptor)// 在线缓存
                 .addInterceptor(new Interceptor() {//添加请求头
                     @Override
                     public Response intercept(@NonNull Chain chain) throws IOException {
@@ -93,6 +94,63 @@ public class MyOkHttpClient {
             }
         }
         return mClient;
+    }
+
+    // 获取ClientBuilder
+    public static OkHttpClient.Builder getClientBuilder() {
+        synchronized (MyOkHttpClient.class) {
+            if (mClientBuilder == null)
+                mClientBuilder = new OkHttpClient.Builder();
+        }
+        return mClientBuilder;
+    }
+
+    // 获取默认超时时间
+    public static int getDefaultTimeout() {
+        return defaultTimeout;
+    }
+
+    // 设置默认超时时间
+    public static void setDefaultTimeout(int timeout) {
+        defaultTimeout = timeout;
+        getClientBuilder()
+                .connectTimeout(defaultTimeout, TimeUnit.SECONDS)// 超时时间15S
+                .writeTimeout(defaultTimeout, TimeUnit.SECONDS)
+                .readTimeout(defaultTimeout, TimeUnit.SECONDS);
+    }
+
+    // 获取缓存文件
+    public static File getCacheFile() {
+        return cacheFile;
+    }
+
+    // 设置缓存文件
+    public static void setCacheFile(File file) {
+        cacheFile = file;
+        if (cacheFile != null && cacheFile.exists()) {
+            Cache cache = new Cache(cacheFile.getAbsoluteFile(), cacheSize);//设置缓存
+            getClientBuilder().cache(cache);
+        }
+    }
+
+    // 获取缓存大小
+    public static long getCacheSize() {
+        return cacheSize;
+    }
+
+    // 设置缓存大小
+    public static void setCacheSize(long maxSize) {
+        cacheSize = maxSize;
+        if (cacheFile != null && cacheFile.exists()) {
+            Cache cache = new Cache(cacheFile.getAbsoluteFile(), cacheSize);//设置缓存
+            getClientBuilder().cache(cache);
+        }
+    }
+
+    // 设置拦截器
+    public static void setInterceptor(Interceptor interceptor) {
+        if (interceptor != null)
+            getClientBuilder().addInterceptor(interceptor);
     }
 
 }
