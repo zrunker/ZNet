@@ -52,8 +52,10 @@ public class MyOkHttpClient {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         // Okhttp缓存拦截器
-        if (cacheFile == null || cacheFile.exists())
+        if (cacheFile == null)
             cacheFile = new File(Environment.getExternalStorageDirectory() + File.separator + "ibooker", "cacheData");
+        if (!cacheFile.exists())
+            cacheFile.mkdirs();
         Cache cache = new Cache(cacheFile.getAbsoluteFile(), cacheSize);//设置缓存30M
         CacheInterceptor cacheInterceptor = new CacheInterceptor(ZNet.getInstance());// 缓存拦截器
 
