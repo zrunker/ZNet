@@ -12,6 +12,11 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
  * @author 邹峰立
  */
 public class ServiceCreateFactory {
+    /**
+     * 创建服务
+     *
+     * @param clazz   映射的服务类
+     */
     public static <T> T createRetrofitService(final Class<T> clazz) {
         Retrofit retrofit = new Retrofit.Builder()
                 .client(MyOkHttpClient.getClient())
@@ -23,4 +28,20 @@ public class ServiceCreateFactory {
         return retrofit.create(clazz);
     }
 
+    /**
+     * 创建服务
+     *
+     * @param clazz   映射的服务类
+     * @param baseUrl 基址
+     */
+    public static <T> T createRetrofitService(final Class<T> clazz, String baseUrl) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(MyOkHttpClient.getClient())
+                .addConverterFactory(MyGsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .baseUrl(baseUrl)
+                .build();
+
+        return retrofit.create(clazz);
+    }
 }
