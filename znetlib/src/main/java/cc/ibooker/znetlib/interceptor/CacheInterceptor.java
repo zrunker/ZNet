@@ -3,10 +3,9 @@ package cc.ibooker.znetlib.interceptor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import cc.ibooker.znetlib.util.NetworkUtil;
-
 import java.io.IOException;
 
+import cc.ibooker.znetlib.util.NetworkUtil;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.Request;

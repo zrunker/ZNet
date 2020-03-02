@@ -24,7 +24,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class MyOkHttpClient {
     private static OkHttpClient mClient;
     private static OkHttpClient.Builder mClientBuilder;
-    private static int defaultTimeout = 15;// 单位s
+    private static int defaultTimeout = 20;// 单位s
     private static File cacheFile = new File(Environment.getExternalStorageDirectory() + File.separator + "ibooker", "cacheData");
     private static long cacheSize = 31457280;// 缓存大小30M - 1024 * 1024 * 30
 

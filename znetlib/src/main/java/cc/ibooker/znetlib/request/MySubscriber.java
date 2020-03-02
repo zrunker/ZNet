@@ -3,16 +3,16 @@ package cc.ibooker.znetlib.request;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import cc.ibooker.znetlib.dto.ErrorData;
 
 import java.net.SocketTimeoutException;
 
+import cc.ibooker.znetlib.dto.ErrorData;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import rx.Subscriber;
 
 /**
- * 复写订阅
+ * 自定义订阅
  *
  * @author 邹峰立
  */

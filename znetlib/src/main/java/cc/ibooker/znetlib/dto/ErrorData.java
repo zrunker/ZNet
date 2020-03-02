@@ -8,6 +8,7 @@ package cc.ibooker.znetlib.dto;
 public class ErrorData {
     private String msg;
     private int code;
+    private String subCode;
 
     public ErrorData() {
         super();
@@ -16,6 +17,12 @@ public class ErrorData {
     public ErrorData(String msg, int code) {
         this.msg = msg;
         this.code = code;
+    }
+
+    public ErrorData(String msg, int code, String subCode) {
+        this.msg = msg;
+        this.code = code;
+        this.subCode = subCode;
     }
 
     public String getMsg() {
@@ -34,11 +41,20 @@ public class ErrorData {
         this.code = code;
     }
 
+    public String getSubCode() {
+        return subCode;
+    }
+
+    public void setSubCode(String subCode) {
+        this.subCode = subCode;
+    }
+
     @Override
     public String toString() {
         return "ErrorData{" +
                 "msg='" + msg + '\'' +
                 ", code=" + code +
+                ", subCode='" + subCode + '\'' +
                 '}';
     }
 }
