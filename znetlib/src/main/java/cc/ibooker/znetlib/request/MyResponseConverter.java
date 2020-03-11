@@ -16,7 +16,7 @@ import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
-import static okhttp3.internal.Util.UTF_8;
+import static com.squareup.okhttp.internal.Util.UTF_8;
 
 /**
  * 网络请求响应Converter
