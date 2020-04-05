@@ -2,7 +2,6 @@ package cc.ibooker.znetlib.request;
 
 import android.text.TextUtils;
 
-
 import java.net.SocketTimeoutException;
 
 import cc.ibooker.znetlib.dto.ErrorData;
@@ -44,6 +43,10 @@ public abstract class MySubscriber<T> extends Subscriber<T> {
         } else if (e instanceof NoNetException) {
             errorData.setMsg("当前网络不给力！");
             errorData.setCode(-5);
+        } else if (e instanceof LoginException) {
+            onLogin(((LoginException) e).getErrorData());
+        } else if (e instanceof RunException) {
+            errorData = ((RunException) e).getErrorData();
         } else {
             errorData.setMsg(e.getMessage());
         }
@@ -54,5 +57,6 @@ public abstract class MySubscriber<T> extends Subscriber<T> {
 
     protected abstract void onError(ErrorData errorData);
 
-    protected abstract void onLogin(ErrorData errorData);
+    public void onLogin(ErrorData errorData) {
+    }
 }
