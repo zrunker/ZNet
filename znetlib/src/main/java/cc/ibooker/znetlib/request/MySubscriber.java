@@ -45,6 +45,7 @@ public abstract class MySubscriber<T> extends Subscriber<T> {
             errorData.setCode(-5);
         } else if (e instanceof LoginException) {
             onLogin(((LoginException) e).getErrorData());
+            return;
         } else if (e instanceof RunException) {
             errorData = ((RunException) e).getErrorData();
         } else {
