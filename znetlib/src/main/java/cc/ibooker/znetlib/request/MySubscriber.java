@@ -1,6 +1,7 @@
 package cc.ibooker.znetlib.request;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.net.SocketTimeoutException;
 
@@ -54,6 +55,7 @@ public abstract class MySubscriber<T> extends Subscriber<T> {
         if (TextUtils.isEmpty(errorData.getMsg()))
             errorData.setMsg("发生未知异常！");
         onError(errorData);
+        Log.d("Net-MySubscriber", errorData.toString());
     }
 
     protected abstract void onError(ErrorData errorData);
